@@ -11,6 +11,7 @@ import com.kunal.wallpaperapplication.R;
 
 public class MyAdapter extends BaseAdapter {
 
+    //hello
     int[] wallpaper_list;
     Context context;
 
