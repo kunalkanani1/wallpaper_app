@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WallpaperApplication">
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.Wallpaper"
             android:exported="false" />
         <activity
