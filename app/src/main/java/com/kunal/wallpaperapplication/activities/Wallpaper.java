@@ -23,6 +23,7 @@ import androidx.palette.graphics.Palette;
 
 import com.kunal.wallpaperapplication.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -90,32 +91,32 @@ public class Wallpaper extends AppCompatActivity {
             actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
         }
 
-//        home.setOnClickListener(view1 -> {
-//            try {
-//                myWallpaperManager.setResource(list[pos], WallpaperManager.FLAG_SYSTEM);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            alert.dismiss();
-//        });
-//
-//        lock.setOnClickListener(view1 -> {
-//            try {
-//                myWallpaperManager.setResource(list[pos], WallpaperManager.FLAG_LOCK);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            alert.dismiss();
-//        });
-//
-//        both.setOnClickListener(view1 -> {
-//            try {
-//                myWallpaperManager.setResource(list[pos]);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            alert.dismiss();
-//        });
+        home.setOnClickListener(view1 -> {
+            try {
+                myWallpaperManager.setResource(list[pos], WallpaperManager.FLAG_SYSTEM);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            alert.dismiss();
+        });
+
+        lock.setOnClickListener(view1 -> {
+            try {
+                myWallpaperManager.setResource(list[pos], WallpaperManager.FLAG_LOCK);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            alert.dismiss();
+        });
+
+        both.setOnClickListener(view1 -> {
+            try {
+                myWallpaperManager.setResource(list[pos]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            alert.dismiss();
+        });
 
         image3.setImageResource(list[pos]);
 
@@ -137,7 +138,6 @@ public class Wallpaper extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
             }
         });
