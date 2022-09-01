@@ -29,6 +29,7 @@ import java.util.Random;
 public class Wallpaper extends AppCompatActivity {
 
     //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
+
     ImageView image3, share, next, previous, download, set;
     int pos = 0;
     int[] list;
