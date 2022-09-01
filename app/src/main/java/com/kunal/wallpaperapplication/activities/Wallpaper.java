@@ -68,14 +68,12 @@ public class Wallpaper extends AppCompatActivity {
 
         wmlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
-
         View view = LayoutInflater.from(this).inflate(R.layout.dialog, null);
         alert.setView(view);
 
         TextView home = view.findViewById(R.id.yes);
         TextView lock = view.findViewById(R.id.no);
         TextView both = view.findViewById(R.id.both);
-
 
         Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
         Palette p = createPaletteSync(icon);
