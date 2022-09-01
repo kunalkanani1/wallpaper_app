@@ -19,7 +19,6 @@ public class WallpaperAdapter extends BaseAdapter {
         this.context = context;
     }
 
-
     @Override
     public int getCount() {
         return temp.length;
