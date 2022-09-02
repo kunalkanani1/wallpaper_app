@@ -12,7 +12,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,13 +132,12 @@ public class Wallpaper extends AppCompatActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
                 String currentDateandTime = sdf.format(new Date());
-                File f = new File(MainActivity.folder.getAbsolutePath()+"/" +"IMG_"+currentDateandTime+".jpg");
+                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + "IMG_" + currentDateandTime + ".jpg");
                 try {
                     f.createNewFile();
                     FileOutputStream fo = new FileOutputStream(f);
@@ -148,8 +146,6 @@ public class Wallpaper extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
 
@@ -170,7 +166,7 @@ public class Wallpaper extends AppCompatActivity {
                 share.setType("image/jpeg");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                File f = new File(MainActivity.folder.getAbsolutePath()+"/" + "share1.jpg");
+                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + "share1.jpg");
                 try {
                     f.createNewFile();
                     FileOutputStream fo = new FileOutputStream(f);
@@ -186,7 +182,6 @@ public class Wallpaper extends AppCompatActivity {
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (pos >= 1) {
                     pos--;
                     image3.setImageResource(list[pos]);
@@ -209,7 +204,6 @@ public class Wallpaper extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (pos < list.length - 1) {
                     pos++;
                     image3.setImageResource(list[pos]);
@@ -229,17 +223,19 @@ public class Wallpaper extends AppCompatActivity {
             }
         });
     }
+
     public static Bitmap loadBitmapFromView(View view) {
-        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(returnedBitmap);
-        Drawable bgDrawable =view.getBackground();
-        if (bgDrawable!=null)
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
             bgDrawable.draw(canvas);
         else
             canvas.drawColor(Color.WHITE);
         view.draw(canvas);
         return returnedBitmap;
     }
+
     void getcolor(Palette p) {
         alist.clear();
         alist.add(p.getVibrantSwatch());

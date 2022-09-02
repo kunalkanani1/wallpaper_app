@@ -22,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     int[] wallpaper_list = {R.drawable.flowers, R.drawable.cars, R.drawable.buildings, R.drawable.seas};
 
     GridView gridView;
-    String[] permissions={Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     static File folder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("pos", i);
             startActivity(intent);
         });
-        ActivityCompat.requestPermissions(MainActivity.this, permissions,1);
+
+        ActivityCompat.requestPermissions(MainActivity.this, permissions, 1);
+
     }
 
     @Override
@@ -46,24 +49,16 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
-
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    folder=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/myfolder");
-                    if(folder.exists())
-                    {
+                    folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/myfolder");
+                    if (folder.exists()) {
                         System.out.println("folder exist");
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println("folder not exist");
-                        if(folder.mkdir())
-                        {
+                        if (folder.mkdir()) {
                             System.out.println("folder created");
-                        }
-                        else
-                        {
+                        } else {
                             System.out.println("folder not created");
                         }
                     }
@@ -72,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
-
 
                 return;
             }
