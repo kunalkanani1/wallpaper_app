@@ -2,11 +2,17 @@ package com.kunal.wallpaperapplication.activities;
 
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +29,14 @@ import androidx.palette.graphics.Palette;
 
 import com.kunal.wallpaperapplication.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 public class Wallpaper extends AppCompatActivity {
@@ -122,6 +134,22 @@ public class Wallpaper extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+                String currentDateandTime = sdf.format(new Date());
+                File f = new File(MainActivity.folder.getAbsolutePath()+"/" +"IMG_"+currentDateandTime+".jpg");
+                try {
+                    f.createNewFile();
+                    FileOutputStream fo = new FileOutputStream(f);
+                    fo.write(bytes.toByteArray());
+                    System.out.println("downloaded");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
 
@@ -136,7 +164,22 @@ public class Wallpaper extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
+                Bitmap icon = loadBitmapFromView(linearLayout);
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("image/jpeg");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                File f = new File(MainActivity.folder.getAbsolutePath()+"/" + "share1.jpg");
+                try {
+                    f.createNewFile();
+                    FileOutputStream fo = new FileOutputStream(f);
+                    fo.write(bytes.toByteArray());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                share.putExtra(Intent.EXTRA_STREAM, Uri.parse(f.getAbsolutePath()));
+                startActivity(Intent.createChooser(share, "Share Image"));
             }
         });
 
@@ -186,7 +229,17 @@ public class Wallpaper extends AppCompatActivity {
             }
         });
     }
-
+    public static Bitmap loadBitmapFromView(View view) {
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        Drawable bgDrawable =view.getBackground();
+        if (bgDrawable!=null)
+            bgDrawable.draw(canvas);
+        else
+            canvas.drawColor(Color.WHITE);
+        view.draw(canvas);
+        return returnedBitmap;
+    }
     void getcolor(Palette p) {
         alist.clear();
         alist.add(p.getVibrantSwatch());
