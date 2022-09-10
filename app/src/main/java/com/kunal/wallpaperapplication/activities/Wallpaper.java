@@ -5,15 +5,13 @@ import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.palette.graphics.Palette;
+import androidx.viewpager.widget.ViewPager;
 
 import com.kunal.wallpaperapplication.R;
+import com.kunal.wallpaperapplication.adapter.pager_adapter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -42,7 +43,8 @@ public class Wallpaper extends AppCompatActivity {
 
     //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
 
-    ImageView image3, share, next, previous, download, set;
+    ImageView share, next, previous, download, set;
+    ViewPager pager;
     int pos = 0;
     int[] list;
     String[] arr = {"Home", "Lock"};
@@ -50,6 +52,7 @@ public class Wallpaper extends AppCompatActivity {
     ActionBar actionBar;
     Palette.Swatch vibrantSwatch;
     int random = 0;
+    int currentimg;
     ArrayList<Palette.Swatch> alist = new ArrayList();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -59,7 +62,6 @@ public class Wallpaper extends AppCompatActivity {
         setContentView(R.layout.activity_wallpaper);
 
         actionBar = getSupportActionBar();
-        image3 = findViewById(R.id.image3);
         share = findViewById(R.id.share);
         next = findViewById(R.id.next);
         previous = findViewById(R.id.previous);
@@ -69,6 +71,13 @@ public class Wallpaper extends AppCompatActivity {
 
         list = getIntent().getIntArrayExtra("list");
         pos = getIntent().getIntExtra("pos", 0);
+        currentimg = list[pos];
+
+        pager = findViewById(R.id.pager);
+        pager_adapter pa = new pager_adapter(this, list);
+        pager.setAdapter(pa);
+
+        pager.setCurrentItem(pos);
 
         WallpaperManager myWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
 
@@ -97,7 +106,7 @@ public class Wallpaper extends AppCompatActivity {
             linearLayout.setBackgroundColor(vibrantSwatch.getRgb());
             random = new Random().nextInt(alist.size() - 0) + 0;
             vibrantSwatch = alist.get(random);
-            actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
+//            actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
         }
 
         home.setOnClickListener(view1 -> {
@@ -127,8 +136,6 @@ public class Wallpaper extends AppCompatActivity {
             alert.dismiss();
         });
 
-        image3.setImageResource(list[pos]);
-
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,12 +144,11 @@ public class Wallpaper extends AppCompatActivity {
                 icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
                 String currentDateandTime = sdf.format(new Date());
-                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + "IMG_" + currentDateandTime + ".jpg");
+                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + currentDateandTime + ".jpg");
                 try {
                     f.createNewFile();
                     FileOutputStream fo = new FileOutputStream(f);
                     fo.write(bytes.toByteArray());
-                    System.out.println("downloaded");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -160,13 +166,14 @@ public class Wallpaper extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
-                Bitmap icon = loadBitmapFromView(linearLayout);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("image/jpeg");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + "share1.jpg");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+                String currentDateandTime = sdf.format(new Date());
+                File f = new File(MainActivity.folder.getAbsolutePath() + "/" + currentDateandTime + ".jpg");
                 try {
                     f.createNewFile();
                     FileOutputStream fo = new FileOutputStream(f);
@@ -182,9 +189,10 @@ public class Wallpaper extends AppCompatActivity {
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (pos >= 1) {
                     pos--;
-                    image3.setImageResource(list[pos]);
+                    pager.setCurrentItem(pos);
                     Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
                     Palette p = createPaletteSync(icon);
                     getcolor(p);
@@ -195,7 +203,7 @@ public class Wallpaper extends AppCompatActivity {
                         linearLayout.setBackgroundColor(vibrantSwatch.getRgb());
                         random = new Random().nextInt(alist.size() - 0) + 0;
                         vibrantSwatch = alist.get(random);
-                        actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
+//                        actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
                     }
                 }
             }
@@ -204,9 +212,10 @@ public class Wallpaper extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (pos < list.length - 1) {
                     pos++;
-                    image3.setImageResource(list[pos]);
+                    pager.setCurrentItem(pos);
                     Bitmap icon = BitmapFactory.decodeResource(getResources(), list[pos]);
                     Palette p = createPaletteSync(icon);
                     getcolor(p);
@@ -217,23 +226,66 @@ public class Wallpaper extends AppCompatActivity {
                         linearLayout.setBackgroundColor(vibrantSwatch.getRgb());
                         random = new Random().nextInt(alist.size() - 0) + 0;
                         vibrantSwatch = alist.get(random);
-                        actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
+//                        actionBar.setBackgroundDrawable(new ColorDrawable(vibrantSwatch.getRgb()));
                     }
                 }
             }
         });
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentimg = list[position];
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
-    public static Bitmap loadBitmapFromView(View view) {
-        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(returnedBitmap);
-        Drawable bgDrawable = view.getBackground();
-        if (bgDrawable != null)
-            bgDrawable.draw(canvas);
-        else
-            canvas.drawColor(Color.WHITE);
-        view.draw(canvas);
-        return returnedBitmap;
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.save) {
+            Bitmap icon = BitmapFactory.decodeResource(getResources(), currentimg);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            File f = new File(MainActivity.folder.getAbsolutePath() + "/" + currentDateandTime + ".jpg");
+            try {
+                f.createNewFile();
+                FileOutputStream fo = new FileOutputStream(f);
+                fo.write(bytes.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        if (item.getItemId() == R.id.share) {
+
+        }
+
+        if (item.getItemId() == R.id.wallpaper) {
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     void getcolor(Palette p) {
